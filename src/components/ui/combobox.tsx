@@ -40,8 +40,8 @@ export function Combobox({
         >
           {value
             ? merchants.find(
-                (merchant: Merchant): boolean => merchant.name === value,
-              )?.name
+              (merchant: Merchant): boolean => merchant.name === value,
+            )?.name
             : "Select Merchant"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

@@ -97,7 +97,9 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
 
   if (!merchant_selected) return { error: "User not found" };
   await db.insert(link).values({
+    upi: data.upiId,
     id: generateId(10),
+    isverified: false,
     url: data.inputValue,
     merchantId: merchant_selected.id,
   });

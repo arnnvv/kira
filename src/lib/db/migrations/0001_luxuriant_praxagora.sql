@@ -1,0 +1,1 @@
+ALTER TABLE "kira_link" ALTER COLUMN "merchant_id" SET DATA TYPE varchar;

@@ -1,4 +1,4 @@
-import { pgTableCreator, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTableCreator, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator(
   (name: string): string => `kira_${name}`,
@@ -13,8 +13,8 @@ export const merchant = createTable("merchant", {
 });
 
 export const link = createTable("link", {
-  id: serial('id').primaryKey(),
-  merchantId: varchar("merchant_id", { length: 21 })
+  id: varchar("id").primaryKey(),
+  merchantId: varchar("merchant_id")
     .notNull()
     .references(() => merchant.id),
   url: varchar("url", { length: 255 }).notNull(),

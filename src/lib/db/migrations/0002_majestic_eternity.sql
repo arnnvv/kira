@@ -1,0 +1,1 @@
+ALTER TABLE "kira_link" ALTER COLUMN "id" SET DATA TYPE varchar;

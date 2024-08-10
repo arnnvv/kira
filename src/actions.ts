@@ -1,6 +1,6 @@
 "use server";
 
-import { Session, User as LuciaUser, LegacyScrypt } from "lucia";
+import { Session, User as LuciaUser, LegacyScrypt, generateId } from "lucia";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { lucia } from "./lib/auth";
@@ -96,12 +96,9 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
     })) as Merchant | undefined;
 
   if (!merchant_selected) return { error: "User not found" };
-  console.log(merchant_selected.id, data.inputValue);
-  await db
-    .insert(link)
-    .values({
-      id: "12345678",
-      url: data.inputValue,
-      merchantId: merchant_selected.id,
-    });
+  await db.insert(link).values({
+    id: generateId(10),
+    url: data.inputValue,
+    merchantId: merchant_selected.id,
+  });
 };

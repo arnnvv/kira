@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export default async function Page(): Promise<JSX.Element> {
-  //  const { user } = await validateRequest();
-  // if (user) return redirect("/");
+  const { user } = await validateRequest();
+  if (user) return redirect("/");
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100">
       <Card className="w-full max-w-md">

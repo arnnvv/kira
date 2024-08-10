@@ -1,3 +1,9 @@
+CREATE TABLE IF NOT EXISTS "kira_link" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"merchant_id" varchar(21) NOT NULL,
+	"url" varchar(255) NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "kira_merchant" (
 	"id" varchar(21) PRIMARY KEY NOT NULL,
 	"name" varchar,
@@ -13,6 +19,12 @@ CREATE TABLE IF NOT EXISTS "kira_sessions" (
 	"user_id" varchar(21) NOT NULL,
 	"expires_at" timestamp with time zone NOT NULL
 );
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "kira_link" ADD CONSTRAINT "kira_link_merchant_id_kira_merchant_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."kira_merchant"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "kira_sessions" ADD CONSTRAINT "kira_sessions_user_id_kira_merchant_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."kira_merchant"("id") ON DELETE no action ON UPDATE no action;

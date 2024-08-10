@@ -8,7 +8,7 @@ import { ActionResult } from "./app/_components/FormComponent";
 import { redirect } from "next/navigation";
 import { db } from "./lib/db";
 import { validateEmail } from "./lib/validate";
-import { Merchant } from "./lib/db/schema";
+import { link, Merchant } from "./lib/db/schema";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -87,4 +87,10 @@ export const loginAction = async (
     return { error: "Something went wrong" };
   }
   return redirect("/");
+};
+
+export const sendlinkAction = async (data: FormValues): Promise<void> => {
+  await db
+    .insert(link)
+    .values({ merchantId: data.selectedMerchant, url: data.inputValue });
 };

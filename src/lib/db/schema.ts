@@ -1,4 +1,9 @@
-import { boolean, pgTableCreator, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  pgTableCreator,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator(
   (name: string): string => `kira_${name}`,
@@ -17,9 +22,9 @@ export const link = createTable("link", {
   merchantId: varchar("merchant_id")
     .notNull()
     .references(() => merchant.id),
-  url: varchar("url", { length: 255 }).notNull(),
-  isverified: boolean("isverified").default(false),
-  upi: varchar("upi", { length: 20 }).notNull(),
+  url: varchar("url").notNull(),
+  isverified: boolean("isverified").notNull().default(false),
+  upi: varchar("upi").notNull(),
 });
 
 export type Link = typeof link.$inferSelect;

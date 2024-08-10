@@ -1,5 +1,5 @@
 {
-  "id": "ff06cb98-cf40-4e28-b144-49094c1afb80",
+  "id": "21162b84-0bcd-4e14-9a96-30361c9ff364",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,13 +10,13 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": true,
           "notNull": true
         },
         "merchant_id": {
           "name": "merchant_id",
-          "type": "varchar(21)",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },

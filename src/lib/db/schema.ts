@@ -1,4 +1,3 @@
-import { relations } from "drizzle-orm";
 import { pgTableCreator, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const createTable = pgTableCreator(
@@ -13,12 +12,8 @@ export const merchant = createTable("merchant", {
   password: varchar("password", { length: 255 }).notNull(),
 });
 
-// export const merchantRelations = relations(merchant, ({ many }) => ({
-//   link: many(link),
-// }));
-
 export const link = createTable("link", {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: uuid("id").defaultRandom().primaryKey(),
   merchantId: varchar("merchant_id", { length: 21 })
     .notNull()
     .references(() => merchant.id),
@@ -27,15 +22,6 @@ export const link = createTable("link", {
 
 export type Link = typeof link.$inferSelect;
 export type NewLink = typeof link.$inferInsert;
-
-// export const linkRelations = relations(link, ({ one }) => ({
-//   merchant: one(merchant, {
-//     fields: [link.merchantId],
-//     references: [merchant.id],
-//   }),
-// }))
-//   ;
-
 export type Merchant = typeof merchant.$inferSelect;
 export type NewMerchant = typeof merchant.$inferInsert;
 

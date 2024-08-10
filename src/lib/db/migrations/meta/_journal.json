@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1723291770029,
-      "tag": "0000_shallow_rick_jones",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1723290407724,
-      "tag": "0001_wet_lockjaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1723297609619,
-      "tag": "0002_mature_silver_surfer",
+      "when": 1723305621444,
+      "tag": "0000_clammy_guardian",
       "breakpoints": true
     }
   ]

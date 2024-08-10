@@ -89,8 +89,8 @@ export const loginAction = async (
   return redirect("/");
 };
 
-export const sendlinkAction = async (data: FormValues): Promise<void> => {
+export const sendlinkAction = async (data: FormValues, value: string): Promise<void> => {
   await db
     .insert(link)
-    .values({ merchantId: data.selectedMerchant, url: data.inputValue });
+    .values({ merchantId: value, url: data.inputValue });
 };

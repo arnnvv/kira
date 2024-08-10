@@ -1,9 +1,51 @@
 {
-  "id": "a25a7ab8-454b-4c46-9ad7-98846f6cca0b",
+  "id": "c803cd0a-8b23-4279-a9f3-f7c5bf9d3fc6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.kira_link": {
+      "name": "kira_link",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "varchar(21)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "kira_link_merchant_id_kira_merchant_id_fk": {
+          "name": "kira_link_merchant_id_kira_merchant_id_fk",
+          "tableFrom": "kira_link",
+          "tableTo": "kira_merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.kira_merchant": {
       "name": "kira_merchant",
       "schema": "",

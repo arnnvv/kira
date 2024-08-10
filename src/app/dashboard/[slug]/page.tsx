@@ -9,8 +9,8 @@ export default async function Page({ params }: PageProps) {
     const { slug } = params; // Extract slug from params
 
     // Ensure that the slug is a string, which should match the merchantId type
-    //@ts-ignore
-    const links = await db.select().from(link).where({ merchantId: slug });
+
+    const links = await db.select().from(link).where({ merchantId: slug.toString() });
 
     return (
         <div>

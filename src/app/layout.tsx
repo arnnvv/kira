@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "./providers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -28,8 +29,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        {children}
-        <Toaster richColors />
+        <Providers>
+          {children}
+          <Toaster richColors />
+        </Providers>
       </body>
     </html>
   );

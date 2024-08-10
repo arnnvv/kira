@@ -89,8 +89,19 @@ export const loginAction = async (
   return redirect("/");
 };
 
-export const sendlinkAction = async (data: FormValues, value: string): Promise<void> => {
+export const sendlinkAction = async (data: FormValues, value: string) => {
+  const merchant_selected: Merchant | undefined =
+    (await db.query.merchant.findFirst({
+      where: (users, { eq }) => eq(users.name, value),
+    })) as Merchant | undefined;
+
+  if (!merchant_selected) return { error: "User not found" };
+  console.log(merchant_selected.id, data.inputValue);
   await db
     .insert(link)
-    .values({ merchantId: value, url: data.inputValue });
+    .values({
+      id: "12345678",
+      url: data.inputValue,
+      merchantId: merchant_selected.id,
+    });
 };

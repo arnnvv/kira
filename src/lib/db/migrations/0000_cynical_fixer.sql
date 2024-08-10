@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "kira_link" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY NOT NULL,
 	"merchant_id" varchar(21) NOT NULL,
 	"url" varchar(255) NOT NULL
 );

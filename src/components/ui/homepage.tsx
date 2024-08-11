@@ -34,7 +34,6 @@ export const Homepage = ({
   const inputValue = watch("inputValue");
 
   const onSubmit = async (data: FormValues) => {
-    await sendlinkAction(data, value);
     try {
       if (!data.inputValue) {
         toast.error("select input value", {

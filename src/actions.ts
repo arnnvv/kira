@@ -4,12 +4,12 @@ import { Session, User as LuciaUser, LegacyScrypt, generateId } from "lucia";
 import { cookies } from "next/headers";
 import { cache } from "react";
 import { lucia } from "./lib/auth";
-import { ActionResult } from "./app/_components/FormComponent";
 import { redirect } from "next/navigation";
 import { db } from "./lib/db";
 import { validateEmail } from "./lib/validate";
 import { link, Merchant } from "./lib/db/schema";
 import { razorpay } from "./lib/payment";
+import { ActionResult } from "./app/_components/FormComponent";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -83,11 +83,13 @@ export const loginAction = async (
       sessionCookie.value,
       sessionCookie.attributes,
     );
+    return {
+      message: "Welcome back:)",
+    };
   } catch (e) {
     console.error(e);
     return { error: "Something went wrong" };
   }
-  return redirect("/");
 };
 
 export const sendlinkAction = async (data: FormValues, value: string) => {

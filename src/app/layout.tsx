@@ -34,7 +34,7 @@ export default function RootLayout({
           <Toaster richColors />
         </Providers>
       </body>
-      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      {/* <script src="https://checkout.razorpay.com/v1/checkout.js"></script> */}
     </html>
   );
 }

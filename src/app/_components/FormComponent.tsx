@@ -17,6 +17,7 @@ export const FormComponent = ({
 }): JSX.Element => {
   const [state, formAction] = useFormState(action, {
     error: null,
+    message: null,
   });
 
   useEffect((): void => {

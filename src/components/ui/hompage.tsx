@@ -36,6 +36,7 @@ export default function Home({
   const inputValue = watch("inputValue");
 
   const onSubmit = async (data: FormValues) => {
+
     await sendlinkAction(data, value);
   };
 

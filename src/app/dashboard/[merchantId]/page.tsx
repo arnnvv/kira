@@ -25,24 +25,26 @@ export default async function Page({
         <h1 className="text-2xl font-semibold mb-4">Links for Merchant</h1>
         {links.length > 0 ? (
           <ul className="space-y-4">
-            {links.map((link: Link): JSX.Element => (
-              <li key={link.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
+            {links.map(
+              (link: Link): JSX.Element => (
+                <li
+                  key={link.id}
+                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
                 >
-                  {link.url}
-                </a>
-                <button
-                  className="text-red-500 hover:text-red-700"
-
-                >
-                  <FaTrashAlt className="w-5 h-5" />
-                </button>
-              </li>
-            ))}
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {link.url}
+                  </a>
+                  <button className="text-red-500 hover:text-red-700">
+                    <FaTrashAlt className="w-5 h-5" />
+                  </button>
+                </li>
+              ),
+            )}
           </ul>
         ) : (
           <p className="text-gray-500">No links found.</p>

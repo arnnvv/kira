@@ -12,18 +12,16 @@ import { Merchant } from "@/lib/db/schema";
 import { useRecoilValue } from "recoil";
 import { valueAtom } from "@/lib/atoms";
 import { sendlinkAction } from "@/actions";
+import { Button } from "./button";
+import { useState } from "react";
+import { toast } from "sonner";
 
-interface FormValues {
-  selectedMerchant: string;
-  inputValue: string;
-  upiId: string;
-}
-
-export default function Home({
+export const Homepage = ({
   merchants,
 }: {
   merchants: Merchant[];
-}): JSX.Element {
+}): JSX.Element => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const value = useRecoilValue(valueAtom);
   const { control, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {
@@ -37,6 +35,44 @@ export default function Home({
 
   const onSubmit = async (data: FormValues) => {
     await sendlinkAction(data, value);
+    try {
+      if (!data.inputValue) {
+        toast.error("select input value", {
+          id: "1",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("1"),
+          },
+        });
+        return;
+      }
+      if (!data.upiId) {
+        toast.error("select upi id", {
+          id: "2",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("2"),
+          },
+        });
+        return;
+      }
+      if (value === "") {
+        toast.error("select merchant", {
+          id: "3",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("3"),
+          },
+        });
+        return;
+      }
+      setIsLoading(true);
+      await sendlinkAction(data, value);
+    } catch (err) {
+      toast.error(`something went wrong: {e}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -76,9 +112,7 @@ export default function Home({
             <Controller
               name="selectedMerchant"
               control={control}
-              render={(): JSX.Element => (
-                <Combobox merchants={merchants} />
-              )}
+              render={(): JSX.Element => <Combobox merchants={merchants} />}
             />
           </div>
 
@@ -105,26 +139,30 @@ export default function Home({
             />
           </div>
 
-          <button
+          <Button
+            isLoading={isLoading}
             type="submit"
             className="bg-gray-800 text-white p-2 rounded-lg w-full hover:bg-gray-900"
           >
             Submit
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 space-y-2">
           <p className="text-gray-700 text-sm">
-            <strong>Selected Merchant:</strong> <span className="font-normal">{value}</span>
+            <strong>Selected Merchant:</strong>{" "}
+            <span className="font-normal">{value}</span>
           </p>
           <p className="text-gray-700 text-sm">
-            <strong>Input Value:</strong> <span className="font-normal">{inputValue}</span>
+            <strong>Input Value:</strong>{" "}
+            <span className="font-normal">{inputValue}</span>
           </p>
           <p className="text-gray-700 text-sm">
-            <strong>UPI ID:</strong> <span className="font-normal">{watch("upiId")}</span>
+            <strong>UPI ID:</strong>{" "}
+            <span className="font-normal">{watch("upiId")}</span>
           </p>
         </div>
       </div>
     </div>
   );
-}
+};

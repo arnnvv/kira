@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-
 export default async function Page(): Promise<JSX.Element> {
   const { user } = await validateRequest();
   if (user) return redirect(`/dashboard/${user.id}`);
@@ -23,7 +22,7 @@ export default async function Page(): Promise<JSX.Element> {
           <FormComponent action={loginAction}>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email bhenkaloda</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   name="email"
                   id="email"
@@ -45,8 +44,6 @@ export default async function Page(): Promise<JSX.Element> {
               <Button type="submit" className="w-full">
                 Sign In
               </Button>
-
-
             </div>
           </FormComponent>
         </CardContent>

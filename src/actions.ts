@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { db } from "./lib/db";
 import { validateEmail } from "./lib/validate";
 import { link, Merchant } from "./lib/db/schema";
+import { razorpay } from "./lib/payment";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -103,4 +104,10 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
     url: data.inputValue,
     merchantId: merchant_selected.id,
   });
+};
+
+export const razorpayOrderAction = async (amount: string, currency: string) => {
+  const order = await razorpay.orders.create({ amount, currency });
+  console.log(order);
+  return order;
 };

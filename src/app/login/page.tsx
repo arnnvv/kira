@@ -6,9 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+
 export default async function Page(): Promise<JSX.Element> {
   const { user } = await validateRequest();
-  if (user) return redirect("/");
+  if (user) return redirect(`/dashboard/${user.id}`);
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-100">
       <Card className="w-full max-w-md">
@@ -43,6 +45,8 @@ export default async function Page(): Promise<JSX.Element> {
               <Button type="submit" className="w-full">
                 Sign In
               </Button>
+
+
             </div>
           </FormComponent>
         </CardContent>

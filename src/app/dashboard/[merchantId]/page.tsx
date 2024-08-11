@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { Link, link } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { FaTrashAlt } from "react-icons/fa";
 
 export default async function Page({
   params,
@@ -19,22 +20,39 @@ export default async function Page({
     .where(eq(link.merchantId, merchantId));
 
   return (
-    <div>
-      {links.length > 0 ? (
-        <ul>
-          {links.map(
-            (link: Link): JSX.Element => (
-              <li key={link.id}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      <div className="bg-white shadow-md rounded-lg w-full max-w-2xl p-6">
+        <h1 className="text-2xl font-semibold mb-4">Links for Merchant</h1>
+        {links.length > 0 ? (
+          <ul className="space-y-4">
+            {links.map((link: Link): JSX.Element => (
+              <li key={link.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
                   {link.url}
                 </a>
+                <button
+                  className="text-red-500 hover:text-red-700"
+
+                >
+                  <FaTrashAlt className="w-5 h-5" />
+                </button>
               </li>
-            ),
-          )}
-        </ul>
-      ) : (
-        <p>No links found.</p>
-      )}
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">No links found.</p>
+        )}
+      </div>
     </div>
   );
+}
+
+async function handleDelete(linkId: number) {
+  // Implement the delete logic here
+  // e.g., send a request to delete the link from the database
 }

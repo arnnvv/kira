@@ -10,6 +10,7 @@ import { validateEmail } from "./lib/validate";
 import { link, Merchant } from "./lib/db/schema";
 import { razorpay } from "./lib/payment";
 import { ActionResult } from "./app/_components/FormComponent";
+import { eq } from "drizzle-orm";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -115,4 +116,25 @@ export const razorpayOrderAction = async (amount: string, currency: string) => {
   const order = await razorpay.orders.create({ amount, currency });
   console.log(order);
   return order;
+};
+
+export const handledeleteAction = async (
+  _: any,
+  formData: FormData,
+): Promise<ActionResult> => {
+  const linkId = formData.get("linkId") as string;
+  try {
+    const idExists: { id: string }[] = await db
+      .select({ id: link.id })
+      .from(link)
+      .where(eq(link.id, linkId))
+      .limit(1);
+    if (!idExists) return { error: "Link not found" };
+    await db.delete(link).where(eq(link.id, linkId));
+    return {
+      message: "Link deleted successfully",
+    };
+  } catch (e) {
+    return { error: `${e}` };
+  }
 };

@@ -1,4 +1,5 @@
-import { validateRequest } from "@/actions";
+import { handledeleteAction, validateRequest } from "@/actions";
+import { FormComponent } from "@/app/_components/FormComponent";
 import { db } from "@/lib/db";
 import { Link, link } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -39,9 +40,17 @@ export default async function Page({
                   >
                     {link.url}
                   </a>
-                  <button className="text-red-500 hover:text-red-700">
-                    <FaTrashAlt className="w-5 h-5" />
-                  </button>
+                  <FormComponent action={handledeleteAction}>
+                    <input
+                      type="hidden"
+                      name="linkId"
+                      id="linkId"
+                      value={link.id}
+                    />
+                    <button className="text-red-500 hover:text-red-700">
+                      <FaTrashAlt className="w-5 h-5" />
+                    </button>
+                  </FormComponent>
                 </li>
               ),
             )}
@@ -52,9 +61,4 @@ export default async function Page({
       </div>
     </div>
   );
-}
-
-async function handleDelete(linkId: number) {
-  // Implement the delete logic here
-  // e.g., send a request to delete the link from the database
 }

@@ -53,7 +53,7 @@ export const loginAction = async (
   formData: FormData,
 ): Promise<ActionResult> => {
   const { user } = await validateRequest();
-  if (user) return redirect("/");
+  if (user) return redirect(`/dashboard/${user.id}`);
   const email = formData.get("email");
   if (typeof email !== "string") return { error: "Email is required" };
   if (!validateEmail({ email })) return { error: "Invalid email" };
@@ -97,13 +97,16 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
     })) as Merchant | undefined;
 
   if (!merchant_selected) return { error: "User not found" };
-  await db.insert(link).values({
-    upi: data.upiId,
-    id: generateId(10),
-    isverified: false,
-    url: data.inputValue,
-    merchantId: merchant_selected.id,
-  });
+  else {
+    await db.insert(link).values({
+      upi: data.upiId,
+      id: generateId(10),
+      isverified: false,
+      url: data.inputValue,
+      merchantId: merchant_selected.id,
+    });
+    return { success: "Link created successfully" };
+  }
 };
 
 export const razorpayOrderAction = async (amount: string, currency: string) => {

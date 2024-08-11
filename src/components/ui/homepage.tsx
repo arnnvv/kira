@@ -67,7 +67,15 @@ export const Homepage = ({
         return;
       }
       setIsLoading(true);
-      await sendlinkAction(data, value);
+      const res = await sendlinkAction(data, value);
+      if ("success" in res)
+        toast.success(res.success, {
+          id: "4",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("4"),
+          },
+        });
     } catch (err) {
       toast.error(`something went wrong: {e}`);
     } finally {

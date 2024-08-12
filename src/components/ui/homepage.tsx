@@ -152,6 +152,10 @@ export const Homepage = ({
               try {
                 toast.info("Processing payment...", {
                   id: "5",
+                  action: {
+                    label: "Close",
+                    onClick: (): string | number => toast.dismiss("5"),
+                  },
                 });
                 await razorpayOrderAction(100, "INR");
               } finally {

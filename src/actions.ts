@@ -112,12 +112,6 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
   }
 };
 
-export const razorpayOrderAction = async (amount: string, currency: string) => {
-  const order = await razorpay.orders.create({ amount, currency });
-  console.log(order);
-  return order;
-};
-
 export const handledeleteAction = async (
   _: any,
   formData: FormData,
@@ -138,3 +132,17 @@ export const handledeleteAction = async (
     return { error: `${e}` };
   }
 };
+
+export const razorpayOrderAction = async (amount: number, currency: string) => {
+  const order = await razorpay.orders.create({
+    amount: amount * 100,
+    currency,
+  });
+  console.log(order);
+};
+
+export const razorpayVerifyAction = async (
+  razorpay_order_id: string,
+  razorpay_payment_id: string,
+  razorpay_signature: string,
+) => {};

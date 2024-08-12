@@ -1,4 +1,5 @@
 "use client";
+
 import {
   useForm,
   Controller,
@@ -11,7 +12,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Merchant } from "@/lib/db/schema";
 import { useRecoilValue } from "recoil";
 import { valueAtom } from "@/lib/atoms";
-import { sendlinkAction } from "@/actions";
+import { razorpayOrderAction, sendlinkAction } from "@/actions";
 import { Button } from "./button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -145,7 +146,22 @@ export const Homepage = ({
               )}
             />
           </div>
-
+          <Button
+            type="button"
+            onClick={async () => {
+              try {
+                toast.info("Processing payment...", {
+                  id: "5",
+                });
+                await razorpayOrderAction(100, "INR");
+              } finally {
+                toast.dismiss("5");
+              }
+            }}
+            className="bg-blue-600 text-white p-2 rounded-lg w-full hover:bg-blue-700 mb-2"
+          >
+            Pay
+          </Button>
           <Button
             isLoading={isLoading}
             type="submit"

@@ -16,6 +16,7 @@ import { razorpayOrderAction, sendlinkAction } from "@/actions";
 import { Button } from "./button";
 import { useState } from "react";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export const Homepage = ({
   merchants,
@@ -148,19 +149,8 @@ export const Homepage = ({
           </div>
           <Button
             type="button"
-            onClick={async () => {
-              try {
-                toast.info("Processing payment...", {
-                  id: "5",
-                  action: {
-                    label: "Close",
-                    onClick: (): string | number => toast.dismiss("5"),
-                  },
-                });
-                await razorpayOrderAction(100, "INR");
-              } finally {
-                toast.dismiss("5");
-              }
+            onClick={(): never => {
+              redirect("/checkout");
             }}
             className="bg-blue-600 text-white p-2 rounded-lg w-full hover:bg-blue-700 mb-2"
           >

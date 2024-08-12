@@ -144,15 +144,14 @@ export const razorpayVerifyAction = async (
   order_id: string,
   payment_id: string,
   signature: string,
-) => {
+): Promise<boolean> => {
   const razorpayKeySecret: string | undefined = process.env.RAZORPAY_KEY_SECRET;
   if (!razorpayKeySecret || razorpayKeySecret.length === 0)
     throw new Error("Razorpay key secret not found");
 
-  const sign = createHmac("sha256", razorpayKeySecret)
-    .update(order_id + "|" + payment_id)
-    .digest("hex");
-
-  if (sign !== signature) throw new Error("Invalid signature");
-  return await razorpay.payments.fetch(payment_id);
+  return (
+    createHmac("sha256", razorpayKeySecret)
+      .update(order_id + "|" + payment_id)
+      .digest("hex") === signature
+  );
 };

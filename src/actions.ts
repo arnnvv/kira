@@ -11,6 +11,7 @@ import { link, Merchant } from "./lib/db/schema";
 import { razorpay } from "./lib/payment";
 import { ActionResult } from "./app/_components/FormComponent";
 import { eq } from "drizzle-orm";
+import { createHmac } from "crypto";
 
 export const validateRequest = cache(
   async (): Promise<
@@ -133,16 +134,25 @@ export const handledeleteAction = async (
   }
 };
 
-export const razorpayOrderAction = async (amount: number, currency: string) => {
-  const order = await razorpay.orders.create({
+export const razorpayOrderAction = async (amount: number, currency: string) =>
+  await razorpay.orders.create({
     amount: amount * 100,
     currency,
   });
-  console.log(order);
-};
 
 export const razorpayVerifyAction = async (
-  razorpay_order_id: string,
-  razorpay_payment_id: string,
-  razorpay_signature: string,
-) => {};
+  order_id: string,
+  payment_id: string,
+  signature: string,
+) => {
+  const razorpayKeySecret: string | undefined = process.env.RAZORPAY_KEY_SECRET;
+  if (!razorpayKeySecret || razorpayKeySecret.length === 0)
+    throw new Error("Razorpay key secret not found");
+
+  const sign = createHmac("sha256", razorpayKeySecret)
+    .update(order_id + "|" + payment_id)
+    .digest("hex");
+
+  if (sign !== signature) throw new Error("Invalid signature");
+  return await razorpay.payments.fetch(payment_id);
+};

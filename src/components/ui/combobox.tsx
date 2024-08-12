@@ -1,8 +1,5 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -20,12 +17,15 @@ import { Merchant } from "@/lib/db/schema";
 import { useRecoilState } from "recoil";
 import { valueAtom } from "@/lib/atoms";
 import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-export function Combobox({
+export const Combobox = ({
   merchants,
 }: {
   merchants: Merchant[];
-}): JSX.Element {
+}): JSX.Element => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useRecoilState(valueAtom);
 
@@ -40,8 +40,8 @@ export function Combobox({
         >
           {value
             ? merchants.find(
-              (merchant: Merchant): boolean => merchant.name === value,
-            )?.name
+                (merchant: Merchant): boolean => merchant.name === value,
+              )?.name
             : "Select Merchant"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -78,4 +78,4 @@ export function Combobox({
       </PopoverContent>
     </Popover>
   );
-}
+};

@@ -34,6 +34,7 @@ export default function P(): JSX.Element {
       console.error(e);
     }
   };
+
   const processPayment = async (
     e: FormEvent<HTMLFormElement>,
   ): Promise<void> => {
@@ -92,7 +93,7 @@ export default function P(): JSX.Element {
       setLoading(false);
       paymentObject.open();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 

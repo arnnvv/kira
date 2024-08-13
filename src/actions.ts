@@ -155,7 +155,8 @@ export const razorpayVerifyAction = async ({
   razorpayPaymentId: string;
   razorpaySignature: string;
 }): Promise<{ message: string; isOk: boolean }> => {
-  const razorpayKeySecret: string | undefined = process.env.RAZORPAY_KEY_SECRET;
+  const razorpayKeySecret: string | undefined =
+    process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET;
   if (!razorpayKeySecret || razorpayKeySecret.length === 0)
     throw new Error("Razorpay key secret not found");
 

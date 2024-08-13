@@ -12,10 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useSetRecoilState } from "recoil";
+import { canSubmitAtom } from "@/lib/atoms";
 
 export default function P(): JSX.Element {
-  const [loading1, setLoading1] = useState<boolean>(true);
+  const setCanSubmit = useSetRecoilState(canSubmitAtom);
   const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
   const currency: string = "INR";
   const amount: number = 50;
 
@@ -24,14 +28,15 @@ export default function P(): JSX.Element {
     currency: string,
   ): Promise<string | undefined> => {
     try {
-      const id = await razorpayOrderAction(amount, currency);
-      setLoading1(false);
+      const id: string = await razorpayOrderAction(amount, currency);
       return id;
     } catch (e) {
       console.error(e);
     }
   };
-  const processPayment = async (e: FormEvent<HTMLFormElement>) => {
+  const processPayment = async (
+    e: FormEvent<HTMLFormElement>,
+  ): Promise<void> => {
     e.preventDefault();
     const orderId: string | undefined = await createOrderId(amount, currency);
     if (!orderId) throw new Error("Razorpay order id not defined");
@@ -52,7 +57,7 @@ export default function P(): JSX.Element {
             razorpayPaymentId: res.razorpay_payment_id,
             razorpaySignature: res.razorpay_signature,
           });
-          if (result.isOk)
+          if (result.isOk) {
             toast.success(result.message, {
               id: "verify",
               action: {
@@ -60,7 +65,9 @@ export default function P(): JSX.Element {
                 onClick: (): string | number => toast.dismiss("verify"),
               },
             });
-          else
+            setCanSubmit(true);
+            router.push("/");
+          } else
             toast.error(result.message, {
               id: "not-verified",
               action: {

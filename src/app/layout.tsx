@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
+import Script from "next/script";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,12 +30,15 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
+        <Script
+          id="razorpay-checkout-js"
+          src="https://checkout.razorpay.com/v1/checkout.js"
+        />
         <Providers>
           {children}
           <Toaster richColors />
         </Providers>
       </body>
-      {/* <script src="https://checkout.razorpay.com/v1/checkout.js"></script> */}
     </html>
   );
 }

@@ -12,17 +12,18 @@ import { Combobox } from "@/components/ui/combobox";
 import { Merchant } from "@/lib/db/schema";
 import { useRecoilValue } from "recoil";
 import { valueAtom } from "@/lib/atoms";
-import { razorpayOrderAction, sendlinkAction } from "@/actions";
+import { sendlinkAction } from "@/actions";
 import { Button } from "./button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export const Homepage = ({
   merchants,
 }: {
   merchants: Merchant[];
 }): JSX.Element => {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const value = useRecoilValue(valueAtom);
   const { control, handleSubmit, watch } = useForm<FormValues>({
@@ -149,9 +150,7 @@ export const Homepage = ({
           </div>
           <Button
             type="button"
-            onClick={(): never => {
-              redirect("/checkout");
-            }}
+            onClick={(): void => router.push("/checkout")}
             className="bg-blue-600 text-white p-2 rounded-lg w-full hover:bg-blue-700 mb-2"
           >
             Pay

@@ -15,9 +15,10 @@ class RazorpayInstance {
   }
 
   private getRazorpayCredentials(): { key_id: string; key_secret: string } {
-    const razorpayKeyId: string | undefined = process.env.RAZORPAY_KEY_ID;
+    const razorpayKeyId: string | undefined =
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     const razorpayKeySecret: string | undefined =
-      process.env.RAZORPAY_KEY_SECRET;
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET;
 
     if (!razorpayKeyId || razorpayKeyId.length === 0)
       throw new Error("Razorpay key id not found");

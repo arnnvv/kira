@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import { razorpayOrderAction, razorpayVerifyAction } from "@/actions";
 import { Button } from "@/components/ui/button";
-import { LoaderCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -36,8 +35,8 @@ export default function P(): JSX.Element {
     e.preventDefault();
     const orderId: string | undefined = await createOrderId(amount, currency);
     if (!orderId) throw new Error("Razorpay order id not defined");
-    const key_id: string | undefined = process.env.RAZORPAY_KEY_ID;
-    if (!key_id || key_id === "" || key_id.length === 0)
+    const key_id: string | undefined = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    if (!key_id || key_id.length === 0)
       throw new Error("Razorpay key id not defined");
     try {
       const paymentObject = new window.Razorpay({
@@ -48,14 +47,11 @@ export default function P(): JSX.Element {
         description: "Not a Spam",
         order_id: orderId,
         handler: async (res: any): Promise<void> => {
-          const data = {
+          const result = await razorpayVerifyAction({
             orderCreationId: orderId,
             razorpayPaymentId: res.razorpay_payment_id,
-            razorpayOrderId: res.razorpay_order_id,
             razorpaySignature: res.razorpay_signature,
-          };
-
-          const result = await razorpayVerifyAction(data);
+          });
           if (result.isOk)
             toast.success(result.message, {
               id: "verify",
@@ -93,11 +89,7 @@ export default function P(): JSX.Element {
     }
   };
 
-  return loading1 ? (
-    <div className="container h-screen flex justify-center items-center">
-      <LoaderCircle className="animate-spin h-20 w-20 text-primary" />
-    </div>
-  ) : (
+  return (
     <section className="container h-screen flex flex-col justify-center items-center gap-10">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">
         Checkout
@@ -106,8 +98,9 @@ export default function P(): JSX.Element {
         <CardHeader>
           <CardTitle className="my-4">Continue</CardTitle>
           <CardDescription>
-            By clicking on pay you&apos;ll purchase your plan subscription of Rs{" "}
-            {amount}/month
+            Pay ₹{amount} with Razorpay to us so that we can verify your it not
+            a spam. Don&apos;t worry, you&apos;ll get your money back after
+            verification.
           </CardDescription>
         </CardHeader>
         <CardContent>

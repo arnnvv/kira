@@ -10,8 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Combobox } from "@/components/ui/combobox";
 import { Merchant } from "@/lib/db/schema";
-import { useRecoilValue } from "recoil";
-import { valueAtom } from "@/lib/atoms";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { canSubmitAtom, valueAtom } from "@/lib/atoms";
 import { sendlinkAction } from "@/actions";
 import { Button } from "./button";
 import { useState } from "react";
@@ -26,6 +26,7 @@ export const Homepage = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const value = useRecoilValue(valueAtom);
+  const [canSubmit, setCanSubmit] = useRecoilState(canSubmitAtom);
   const { control, handleSubmit, watch } = useForm<FormValues>({
     defaultValues: {
       selectedMerchant: "",
@@ -68,6 +69,16 @@ export const Homepage = ({
         });
         return;
       }
+      if (!canSubmit) {
+        toast.error("Pay First", {
+          id: "99",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("99"),
+          },
+        });
+        return;
+      }
       setIsLoading(true);
       const res = await sendlinkAction(data, value);
       if ("success" in res)
@@ -78,6 +89,7 @@ export const Homepage = ({
             onClick: (): string | number => toast.dismiss("4"),
           },
         });
+      setCanSubmit(false);
     } catch (err) {
       toast.error(`something went wrong: {e}`);
     } finally {

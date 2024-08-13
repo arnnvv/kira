@@ -134,24 +134,34 @@ export const handledeleteAction = async (
   }
 };
 
-export const razorpayOrderAction = async (amount: number, currency: string) =>
-  await razorpay.orders.create({
+export const razorpayOrderAction = async (
+  amount: number,
+  currency: string,
+): Promise<string> => {
+  const order = await razorpay.orders.create({
     amount: amount * 100,
     currency,
   });
-
-export const razorpayVerifyAction = async (
-  order_id: string,
-  payment_id: string,
-  signature: string,
-): Promise<boolean> => {
+  if (!order) throw new Error("Razorpay order action failed");
+  if (!order.id) throw new Error("Razorpay order id not defined");
+  return order.id;
+};
+export const razorpayVerifyAction = async ({
+  orderCreationId,
+  razorpayPaymentId,
+  razorpaySignature,
+}: {
+  orderCreationId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
+}): Promise<{ message: string; isOk: boolean }> => {
   const razorpayKeySecret: string | undefined = process.env.RAZORPAY_KEY_SECRET;
   if (!razorpayKeySecret || razorpayKeySecret.length === 0)
     throw new Error("Razorpay key secret not found");
 
-  return (
-    createHmac("sha256", razorpayKeySecret)
-      .update(order_id + "|" + payment_id)
-      .digest("hex") === signature
-  );
+  return createHmac("sha256", razorpayKeySecret)
+    .update(orderCreationId + "|" + razorpayPaymentId)
+    .digest("hex") === razorpaySignature
+    ? { message: "payment verified successfully", isOk: true }
+    : { message: "payment verification failed", isOk: false };
 };

@@ -1,12 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import {
-  generateId,
-  LegacyScrypt,
-  type User as LuciaUser,
-  type Session,
-} from "lucia";
+import { LegacyScrypt, type User as LuciaUser, type Session } from "lucia";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
@@ -20,6 +15,7 @@ interface FormValues {
   upiId: string;
   selectedMerchant: string;
   inputValue: string;
+  email: string;
 }
 
 export const validateRequest = cache(
@@ -109,16 +105,73 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
       where: (users, { eq }) => eq(users.name, value),
     })) as Merchant | undefined;
 
-  if (!merchant_selected) return { error: "Merchant not found" };
-  else {
-    await db.insert(link).values({
-      upi: data.upiId,
-      id: generateId(10),
-      isverified: false,
-      url: data.inputValue,
+  if (!merchant_selected) {
+    return { error: "Merchant not found" };
+  }
+
+  const productId = process.env.DODO_PAYMENTS_PRODUCT_ID;
+  if (!productId) {
+    console.error("DODO_PAYMENTS_PRODUCT_ID is not set in environment variables.");
+    return { error: "Server configuration error. Please contact support." };
+  }
+
+  const checkoutPayload = {
+    product_cart: [
+      {
+        product_id: productId,
+        quantity: 1,
+      },
+    ],
+    customer: {
+      email: data.email,
+      name: "Valued Customer",
+    },
+    billing: {
+      name: "Valued Customer",
+      street: "123 Digital Lane",
+      city: "Internet City",
+      state: "Information State",
+      zipcode: "000000",
+      country: "IN",
+    },
+    metadata: {
+      upiId: data.upiId,
+      inputValue: data.inputValue,
       merchantId: merchant_selected.id,
+    },
+  };
+
+  try {
+    const baseUrl = process.env.APP_BASE_URL;
+    if (!baseUrl) {
+      console.error("APP_BASE_URL is not set in environment variables.");
+      return { error: "Server configuration error. Please contact support." };
+    }
+
+    const response = await fetch(`${baseUrl}/api/dodo/checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(checkoutPayload),
     });
-    return { success: "Link created successfully" };
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("Failed to create payment link:", errorBody);
+      return { error: "Could not create payment link. Please try again." };
+    }
+
+    const { checkout_url } = await response.json();
+
+    if (!checkout_url) {
+      return { error: "Failed to retrieve checkout URL." };
+    }
+
+    return { checkoutUrl: checkout_url };
+  } catch (error) {
+    console.error(error);
+    return {
+      error: "An unexpected error occurred while creating the payment.",
+    };
   }
 };
 

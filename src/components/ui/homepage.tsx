@@ -21,6 +21,7 @@ interface FormValues {
   upiId: string;
   selectedMerchant: string;
   inputValue: string;
+  email: string;
 }
 
 export const Homepage = ({
@@ -35,68 +36,48 @@ export const Homepage = ({
       selectedMerchant: "",
       inputValue: "",
       upiId: "",
+      email: "",
     },
   });
 
   const inputValue = watch("inputValue");
   const upiIdValue = watch("upiId");
+  const emailValue = watch("email");
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      if (!data.inputValue) {
-        toast.error("Input value is required", {
-          id: "1",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("1"),
-          },
-        });
-        return;
-      }
-      if (!data.upiId) {
-        toast.error("UPI ID is required", {
-          id: "2",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("2"),
-          },
-        });
-        return;
-      }
-      if (value === "") {
-        toast.error("Please select a merchant", {
-          id: "3",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("3"),
-          },
-        });
-        return;
-      }
+    if (!data.inputValue.trim()) {
+      toast.error("Please enter a link or number to report.");
+      return;
+    }
+    if (!data.email.trim() || !/\S+@\S+\.\S+/.test(data.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    if (!data.upiId.trim()) {
+      toast.error("Please enter your UPI ID.");
+      return;
+    }
+    if (value === "") {
+      toast.error("Please select a merchant.");
+      return;
+    }
 
-      setIsLoading(true);
+    setIsLoading(true);
+
+    try {
       const res = await sendlinkAction(data, value);
-      if ("success" in res) {
-        toast.success(res.success, {
-          id: "4",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("4"),
-          },
-        });
-        reset(); // Reset form fields on successful submission
+
+      if (res.checkoutUrl) {
+        window.location.href = res.checkoutUrl;
       } else if (res.error) {
-        toast.error(res.error, {
-          id: "5",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("5"),
-          },
-        });
+        toast.error(res.error);
+        setIsLoading(false);
+      } else {
+        toast.error("An unknown error occurred. Please try again.");
+        setIsLoading(false);
       }
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -107,7 +88,7 @@ export const Homepage = ({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="inputValue" className="mb-2 text-lg font-medium">
-              Report a Link/Number
+              Report a Link/Number (Fee: 0 INR)
             </label>
             <Controller
               name="inputValue"
@@ -143,6 +124,32 @@ export const Homepage = ({
             />
           </div>
 
+          {/* NEW EMAIL FIELD */}
+          <div className="flex flex-col">
+            <label htmlFor="email" className="mb-2 text-lg font-medium">
+              Your Email
+            </label>
+            <Controller
+              name="email"
+              control={control}
+              render={({
+                field,
+              }: {
+                field: ControllerRenderProps<FormValues, "email">;
+                fieldState: ControllerFieldState;
+                formState: UseFormStateReturn<FormValues>;
+              }): JSX.Element => (
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="p-2 border border-gray-300 rounded-lg w-full"
+                  {...field}
+                />
+              )}
+            />
+          </div>
+
           <div className="flex flex-col">
             <label htmlFor="upiId" className="mb-2 text-lg font-medium">
               Your UPI ID
@@ -172,7 +179,7 @@ export const Homepage = ({
             type="submit"
             className="bg-gray-800 text-white p-2 rounded-lg w-full hover:bg-gray-900"
           >
-            Submit
+            {isLoading ? "Redirecting to payment..." : "Proceed to Pay ₹1"}
           </Button>
         </form>
 
@@ -184,6 +191,11 @@ export const Homepage = ({
           <p className="text-gray-700 text-sm">
             <strong>Input Value:</strong>{" "}
             <span className="font-normal">{inputValue || "None"}</span>
+          </p>
+          {/* Display email */}
+          <p className="text-gray-700 text-sm">
+            <strong>Email:</strong>{" "}
+            <span className="font-normal">{emailValue || "None"}</span>
           </p>
           <p className="text-gray-700 text-sm">
             <strong>UPI ID:</strong>{" "}

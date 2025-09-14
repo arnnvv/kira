@@ -4,25 +4,25 @@ import {
   Close,
   Content,
   Description,
-  DialogContentProps,
-  DialogDescriptionProps,
-  DialogOverlayProps,
-  DialogTitleProps,
+  type DialogContentProps,
+  type DialogDescriptionProps,
+  type DialogOverlayProps,
+  type DialogTitleProps,
   Overlay,
   Portal,
   Root,
   Title,
   Trigger,
 } from "@radix-ui/react-dialog";
-import {
-  ComponentPropsWithoutRef,
-  ElementRef,
-  ForwardedRef,
-  forwardRef,
-  HTMLAttributes,
-  RefAttributes,
-} from "react";
 import { X } from "lucide-react";
+import {
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ForwardedRef,
+  forwardRef,
+  type HTMLAttributes,
+  type RefAttributes,
+} from "react";
 import { cn } from "@/lib/utils";
 
 const Dialog = Root;

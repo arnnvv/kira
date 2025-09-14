@@ -1,33 +1,36 @@
 "use client";
 
-import {
-  useForm,
-  Controller,
-  ControllerRenderProps,
-  ControllerFieldState,
-  UseFormStateReturn,
-} from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Combobox } from "@/components/ui/combobox";
-import { Merchant } from "@/lib/db/schema";
-import { useRecoilValue, useRecoilState } from "recoil";
-import { canSubmitAtom, valueAtom } from "@/lib/atoms";
-import { sendlinkAction } from "@/actions";
-import { Button } from "./button";
 import { useState } from "react";
+import {
+  Controller,
+  type ControllerFieldState,
+  type ControllerRenderProps,
+  type UseFormStateReturn,
+  useForm,
+} from "react-hook-form";
+import { useRecoilValue } from "recoil";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { sendlinkAction } from "@/actions";
+import { Combobox } from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
+import { valueAtom } from "@/lib/atoms";
+import type { Merchant } from "@/lib/db/schema";
+import { Button } from "./button";
+
+interface FormValues {
+  upiId: string;
+  selectedMerchant: string;
+  inputValue: string;
+}
 
 export const Homepage = ({
   merchants,
 }: {
   merchants: Merchant[];
 }): JSX.Element => {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const value = useRecoilValue(valueAtom);
-  const [canSubmit, setCanSubmit] = useRecoilState(canSubmitAtom);
-  const { control, handleSubmit, watch } = useForm<FormValues>({
+  const { control, handleSubmit, watch, reset } = useForm<FormValues>({
     defaultValues: {
       selectedMerchant: "",
       inputValue: "",
@@ -36,11 +39,12 @@ export const Homepage = ({
   });
 
   const inputValue = watch("inputValue");
+  const upiIdValue = watch("upiId");
 
   const onSubmit = async (data: FormValues) => {
     try {
       if (!data.inputValue) {
-        toast.error("select input value", {
+        toast.error("Input value is required", {
           id: "1",
           action: {
             label: "Close",
@@ -50,7 +54,7 @@ export const Homepage = ({
         return;
       }
       if (!data.upiId) {
-        toast.error("select upi id", {
+        toast.error("UPI ID is required", {
           id: "2",
           action: {
             label: "Close",
@@ -60,7 +64,7 @@ export const Homepage = ({
         return;
       }
       if (value === "") {
-        toast.error("select merchant", {
+        toast.error("Please select a merchant", {
           id: "3",
           action: {
             label: "Close",
@@ -69,19 +73,10 @@ export const Homepage = ({
         });
         return;
       }
-      if (!canSubmit) {
-        toast.error("Pay First", {
-          id: "99",
-          action: {
-            label: "Close",
-            onClick: (): string | number => toast.dismiss("99"),
-          },
-        });
-        return;
-      }
+
       setIsLoading(true);
       const res = await sendlinkAction(data, value);
-      if ("success" in res)
+      if ("success" in res) {
         toast.success(res.success, {
           id: "4",
           action: {
@@ -89,9 +84,18 @@ export const Homepage = ({
             onClick: (): string | number => toast.dismiss("4"),
           },
         });
-      setCanSubmit(false);
+        reset(); // Reset form fields on successful submission
+      } else if (res.error) {
+        toast.error(res.error, {
+          id: "5",
+          action: {
+            label: "Close",
+            onClick: (): string | number => toast.dismiss("5"),
+          },
+        });
+      }
     } catch (err) {
-      toast.error(`something went wrong: {e}`);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +107,7 @@ export const Homepage = ({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="flex flex-col">
             <label htmlFor="inputValue" className="mb-2 text-lg font-medium">
-              Input Box
+              Report a Link/Number
             </label>
             <Controller
               name="inputValue"
@@ -117,6 +121,7 @@ export const Homepage = ({
               }): JSX.Element => (
                 <Input
                   id="inputValue"
+                  placeholder="Enter spam URL or phone number"
                   className="p-2 border border-gray-300 rounded-lg w-full"
                   {...field}
                 />
@@ -140,7 +145,7 @@ export const Homepage = ({
 
           <div className="flex flex-col">
             <label htmlFor="upiId" className="mb-2 text-lg font-medium">
-              UPI ID
+              Your UPI ID
             </label>
             <Controller
               name="upiId"
@@ -154,19 +159,14 @@ export const Homepage = ({
               }): JSX.Element => (
                 <Input
                   id="upiId"
+                  placeholder="yourname@bank"
                   className="p-2 border border-gray-300 rounded-lg w-full"
                   {...field}
                 />
               )}
             />
           </div>
-          <Button
-            type="button"
-            onClick={(): void => router.push("/checkout")}
-            className="bg-blue-600 text-white p-2 rounded-lg w-full hover:bg-blue-700 mb-2"
-          >
-            Pay
-          </Button>
+
           <Button
             isLoading={isLoading}
             type="submit"
@@ -179,15 +179,15 @@ export const Homepage = ({
         <div className="mt-6 space-y-2">
           <p className="text-gray-700 text-sm">
             <strong>Selected Merchant:</strong>{" "}
-            <span className="font-normal">{value}</span>
+            <span className="font-normal">{value || "None"}</span>
           </p>
           <p className="text-gray-700 text-sm">
             <strong>Input Value:</strong>{" "}
-            <span className="font-normal">{inputValue}</span>
+            <span className="font-normal">{inputValue || "None"}</span>
           </p>
           <p className="text-gray-700 text-sm">
             <strong>UPI ID:</strong>{" "}
-            <span className="font-normal">{watch("upiId")}</span>
+            <span className="font-normal">{upiIdValue || "None"}</span>
           </p>
         </div>
       </div>

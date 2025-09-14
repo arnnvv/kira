@@ -1,5 +1,9 @@
 "use client";
 
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,13 +17,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Merchant } from "@/lib/db/schema";
-import { useRecoilState } from "recoil";
 import { valueAtom } from "@/lib/atoms";
-import { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import type { Merchant } from "@/lib/db/schema";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 export const Combobox = ({
   merchants,

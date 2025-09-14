@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "d": "next dev",
+    "b": "next build",
+    "p": "next start",
+    "l": "next lint",
+    "cl": "rm -rf .next",
+    "f": "biome format --write",
     "ui:add": "pnpm dlx shadcn-ui@latest add",
-    "db:generate": "drizzle-kit generate",
+    "dg": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
@@ -29,7 +31,6 @@
     "lucide-react": "^0.427.0",
     "next": "14.2.5",
     "next-themes": "^0.3.0",
-    "razorpay": "^2.9.4",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.2",
@@ -41,6 +42,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -50,5 +52,10 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

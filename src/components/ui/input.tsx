@@ -1,5 +1,5 @@
+import { type ForwardedRef, forwardRef } from "react";
 import { cn } from "@/lib/utils";
-import { ForwardedRef, forwardRef } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}

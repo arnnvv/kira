@@ -1,4 +1,9 @@
-import { SafeParseReturnType, z, ZodObject, ZodString } from "zod";
+import {
+  type SafeParseReturnType,
+  type ZodObject,
+  type ZodString,
+  z,
+} from "zod";
 
 export const emailSchema: ZodObject<{
   email: ZodString;

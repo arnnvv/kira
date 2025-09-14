@@ -1,17 +1,26 @@
 "use server";
 
-import { Session, User as LuciaUser, LegacyScrypt, generateId } from "lucia";
-import { cookies } from "next/headers";
-import { cache } from "react";
-import { lucia } from "./lib/auth";
-import { redirect } from "next/navigation";
-import { db } from "./lib/db";
-import { validateEmail } from "./lib/validate";
-import { link, Merchant } from "./lib/db/schema";
-import { razorpay } from "./lib/payment";
-import { ActionResult } from "./app/_components/FormComponent";
 import { eq } from "drizzle-orm";
-import { createHmac } from "crypto";
+import {
+  generateId,
+  LegacyScrypt,
+  type User as LuciaUser,
+  type Session,
+} from "lucia";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { cache } from "react";
+import type { ActionResult } from "./app/_components/FormComponent";
+import { lucia } from "./lib/auth";
+import { db } from "./lib/db";
+import { link, type Merchant } from "./lib/db/schema";
+import { validateEmail } from "./lib/validate";
+
+interface FormValues {
+  upiId: string;
+  selectedMerchant: string;
+  inputValue: string;
+}
 
 export const validateRequest = cache(
   async (): Promise<
@@ -100,7 +109,7 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
       where: (users, { eq }) => eq(users.name, value),
     })) as Merchant | undefined;
 
-  if (!merchant_selected) return { error: "User not found" };
+  if (!merchant_selected) return { error: "Merchant not found" };
   else {
     await db.insert(link).values({
       upi: data.upiId,
@@ -124,7 +133,7 @@ export const handledeleteAction = async (
       .from(link)
       .where(eq(link.id, linkId))
       .limit(1);
-    if (!idExists) return { error: "Link not found" };
+    if (!idExists || idExists.length === 0) return { error: "Link not found" };
     await db.delete(link).where(eq(link.id, linkId));
     return {
       message: "Link deleted successfully",
@@ -132,37 +141,4 @@ export const handledeleteAction = async (
   } catch (e) {
     return { error: `${e}` };
   }
-};
-
-export const razorpayOrderAction = async (
-  amount: number,
-  currency: string,
-): Promise<string> => {
-  const order = await razorpay.orders.create({
-    amount: amount * 100,
-    currency,
-  });
-  if (!order) throw new Error("Razorpay order action failed");
-  if (!order.id) throw new Error("Razorpay order id not defined");
-  return order.id;
-};
-export const razorpayVerifyAction = async ({
-  orderCreationId,
-  razorpayPaymentId,
-  razorpaySignature,
-}: {
-  orderCreationId: string;
-  razorpayPaymentId: string;
-  razorpaySignature: string;
-}): Promise<{ message: string; isOk: boolean }> => {
-  const razorpayKeySecret: string | undefined =
-    process.env.NEXT_PUBLIC_RAZORPAY_KEY_SECRET;
-  if (!razorpayKeySecret || razorpayKeySecret.length === 0)
-    throw new Error("Razorpay key secret not found");
-
-  return createHmac("sha256", razorpayKeySecret)
-    .update(orderCreationId + "|" + razorpayPaymentId)
-    .digest("hex") === razorpaySignature
-    ? { message: "payment verified successfully", isOk: true }
-    : { message: "payment verification failed", isOk: false };
 };

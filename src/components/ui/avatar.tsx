@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  AvatarFallbackProps,
-  AvatarImageProps,
-  AvatarProps,
+  type AvatarFallbackProps,
+  type AvatarImageProps,
+  type AvatarProps,
   Fallback,
   Image as ImageOP,
   Root,
 } from "@radix-ui/react-avatar";
 import {
-  ComponentPropsWithoutRef,
-  ElementRef,
-  ForwardedRef,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ForwardedRef,
   forwardRef,
-  RefAttributes,
+  type RefAttributes,
 } from "react";
 import { cn } from "@/lib/utils";
 

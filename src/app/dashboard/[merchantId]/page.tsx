@@ -1,10 +1,10 @@
-import { handledeleteAction, validateRequest } from "@/actions";
-import { FormComponent } from "@/app/_components/FormComponent";
-import { db } from "@/lib/db";
-import { Link, link } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { FaTrashAlt } from "react-icons/fa";
+import { handledeleteAction, validateRequest } from "@/actions";
+import { FormComponent } from "@/app/_components/FormComponent";
+import { db } from "@/lib/db";
+import { type Link, link } from "@/lib/db/schema";
 
 export default async function Page({
   params,

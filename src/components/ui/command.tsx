@@ -1,17 +1,17 @@
 "use client";
 
-import {
-  ComponentPropsWithoutRef,
-  ElementRef,
-  ForwardedRef,
-  forwardRef,
-  HTMLAttributes,
-} from "react";
-import { type DialogProps } from "@radix-ui/react-dialog";
+import type { DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ForwardedRef,
+  forwardRef,
+  type HTMLAttributes,
+} from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 const Command = forwardRef<
   ElementRef<typeof CommandPrimitive>,

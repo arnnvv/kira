@@ -2,17 +2,17 @@
 
 import {
   Content,
-  PopoverContentProps,
+  type PopoverContentProps,
   Portal,
   Root,
   Trigger,
 } from "@radix-ui/react-popover";
 import {
-  ComponentPropsWithoutRef,
-  ElementRef,
-  ForwardedRef,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type ForwardedRef,
   forwardRef,
-  RefAttributes,
+  type RefAttributes,
 } from "react";
 import { cn } from "@/lib/utils";
 

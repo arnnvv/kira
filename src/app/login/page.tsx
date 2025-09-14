@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { loginAction, validateRequest } from "@/actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FormComponent } from "../_components/FormComponent";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FormComponent } from "../_components/FormComponent";
 
 export default async function Page(): Promise<JSX.Element> {
   const { user } = await validateRequest();

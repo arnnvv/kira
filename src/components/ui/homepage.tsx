@@ -179,7 +179,7 @@ export const Homepage = ({
             type="submit"
             className="bg-gray-800 text-white p-2 rounded-lg w-full hover:bg-gray-900"
           >
-            {isLoading ? "Redirecting to payment..." : "Proceed to Pay ₹1"}
+            {isLoading ? "Redirecting to payment..." : "Proceed to Pay ₹0"}
           </Button>
         </form>
 

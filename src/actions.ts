@@ -111,7 +111,9 @@ export const sendlinkAction = async (data: FormValues, value: string) => {
 
   const productId = process.env.DODO_PAYMENTS_PRODUCT_ID;
   if (!productId) {
-    console.error("DODO_PAYMENTS_PRODUCT_ID is not set in environment variables.");
+    console.error(
+      "DODO_PAYMENTS_PRODUCT_ID is not set in environment variables.",
+    );
     return { error: "Server configuration error. Please contact support." };
   }
 
